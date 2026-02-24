@@ -1,6 +1,6 @@
-// Project Title
-// Your Name
-// Date
+// Interactive Scene
+// Ben Hoover
+// 2/24/2026
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
@@ -21,13 +21,13 @@ let laserX;
 let laserY;
 let laserdx;
 let laserdy;
-let radius = 40;
+let radius = 100;
 // let starX;
 // let starY;
 
 function setup() {
   randomSeed(99);
-  createCanvas(700, 700);
+  createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
   playerX = width / 2;
   playerY = height / 2;
@@ -36,8 +36,8 @@ function setup() {
   astroidlocation();
 
   //picks a starting speed for astroid
-  astroiddx = 2;
-  astroiddy = 2;
+  astroiddx = 5;
+  astroiddy = 5;
 }
 
 function draw() {
@@ -147,7 +147,7 @@ function movelaser() {
     astroiddx += 1;
     astroiddx += 1;
 
-    radius += 5;
+    radius += 30;
     astroidlocation();
     laseractive = false;
   }
@@ -159,7 +159,7 @@ function movelaser() {
 //creates a star pattern
 function stars() {
   //fill(0, 0, random(25,200));
-  for (let sX = 0; sX < width; sX += 10) {
+  for (let sX = 0; sX < width; sX += 100) {
     for (let sY = 0; sY < height + 100; sY += 10) {
       fill(100, 100, 100);
       circle(sX, sY, 2);
