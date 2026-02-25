@@ -22,11 +22,9 @@ let laserY;
 let laserdx;
 let laserdy;
 let radius = 100;
-// let starX;
-// let starY;
+let astroidspeed = 1;
 
 function setup() {
-  randomSeed(99);
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
   playerX = width / 2;
@@ -36,8 +34,8 @@ function setup() {
   astroidlocation();
 
   //picks a starting speed for astroid
-  astroiddx = 5;
-  astroiddy = 5;
+  astroiddx = astroidspeed;
+  astroiddy = astroidspeed;
 }
 
 function draw() {
@@ -141,13 +139,10 @@ function movelaser() {
   let distance = dist(laserX, laserY, astroidX, astroidY);
 
   if (distance < radius - radius / 2) {
-    //dx = random(5, 9);
-    //dy = random(5, 9);
+    astroidspeed += 1.1;
+    console.log(astroidspeed);
 
-    astroiddx += 1;
-    astroiddx += 1;
-
-    radius += 30;
+    // radius += 30;
     astroidlocation();
     laseractive = false;
   }
