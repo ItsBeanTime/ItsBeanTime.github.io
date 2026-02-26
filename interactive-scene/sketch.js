@@ -21,8 +21,8 @@ let laserX;
 let laserY;
 let laserdx;
 let laserdy;
-let radius = 100;
-let astroidspeed = 1;
+let radius = 400;
+let astroidspeed = 2;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -142,7 +142,9 @@ function movelaser() {
     astroidspeed += 1.1;
     console.log(astroidspeed);
 
-    // radius += 30;
+    astroiddx += 1.2;
+    astroiddy += 1.2;
+    radius -= 20;
     astroidlocation();
     laseractive = false;
   }
