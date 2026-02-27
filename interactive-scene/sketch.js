@@ -3,45 +3,45 @@
 // 2/24/2026
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// I used the mouse wheel to control the players speed and the lasers speed
 
 //https://p5js.org/examples/angles-and-motion-aim/
 
 let gamestate = "Game";
-let laserspeed = 15;
-let playerspeed;
+
+// player variables
+let playerspeed = 5;
 let playerX;
 let playerY;
-let astroidX;
-let astroidY;
-let astroiddx;
-let astroiddy;
+let playerSize = 75;
+// laser variables
+let laserspeed = 15;
 let laseractive = false;
 let laserX;
 let laserY;
 let laserdx;
 let laserdy;
-let radius = 400;
-let astroidspeed = 2;
+let laserRadius = playerSize / 2;
+
+// astroid variables
+let astroidX;
+let astroidY;
+let astroiddx = 4;
+let astroiddy = 4;
+let radius = 50;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
   playerX = width / 2;
   playerY = height / 2;
-  playerspeed = 5;
-
   astroidlocation();
-
-  //picks a starting speed for astroid
-  astroiddx = astroidspeed;
-  astroiddy = astroidspeed;
 }
 
 function draw() {
   //checks if player is near astroid and if true end the game
   let dead = dist(playerX, playerY, astroidX, astroidY);
-  if (dead < radius - radius / 2) {
+  if (dead < playerSize - radius/1.5) {
     gamestate = "End";
     if (gamestate === "End") {
       return;
@@ -92,14 +92,14 @@ function displayplayer() {
   fill(255);
   rotate(Angle);
   rectMode(CENTER);
-  rect(0, 0, 25, 25);
+  rect(0, 0, playerSize, playerSize);
   pop();
 }
 
 //pick a random corner to spawn
 function astroidlocation() {
-  astroidX = random([radius / 2, width - radius / 2]);
-  astroidY = random([radius / 2, height - radius / 2]);
+  astroidX = random([-radius, width + radius]);
+  astroidY = random([-radius, height + radius]);
 }
 
 function displayastroid() {
@@ -107,11 +107,17 @@ function displayastroid() {
   circle(astroidX, astroidY, radius);
 }
 
-function bounce() {
-  if (astroidX > width - radius / 2 || astroidX < radius / 2) {
+function bounce() { 
+  if (astroidX > width - radius / 2 && astroiddx > 0) {
     astroiddx *= -1;
   }
-  if (astroidY > height - radius / 2 || astroidY < radius / 2) {
+  if (astroidX < radius / 2 && astroiddx < 0){
+    astroiddx *= -1;
+  }
+  if (astroidY > height - radius / 2 && astroiddy > 0) {
+    astroiddy *= -1;
+  }
+  if (astroidY < radius /2 && astroiddy < 0){
     astroiddy *= -1;
   }
 }
@@ -134,17 +140,12 @@ function movelaser() {
   laserY += laserdy;
 
   fill(255, 0, 0);
-  circle(laserX, laserY, 15);
+  circle(laserX, laserY, laserRadius);
 
   let distance = dist(laserX, laserY, astroidX, astroidY);
 
-  if (distance < radius - radius / 2) {
-    astroidspeed += 1.1;
-    console.log(astroidspeed);
-
-    astroiddx += 1.2;
-    astroiddy += 1.2;
-    radius -= 20;
+  if (distance < laserRadius + radius/2.5) {
+    radius += 20;
     astroidlocation();
     laseractive = false;
   }
