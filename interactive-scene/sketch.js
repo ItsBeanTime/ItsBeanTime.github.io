@@ -8,12 +8,14 @@
 //https://p5js.org/examples/angles-and-motion-aim/
 
 let gamestate = "Game";
+let sX = [];
+let sY = [];
 
 // player variables
 let playerspeed = 5;
 let playerX;
 let playerY;
-let playerSize = 75;
+let playerSize = 50;
 // laser variables
 let laserspeed = 15;
 let laseractive = false;
@@ -41,7 +43,7 @@ function setup() {
 function draw() {
   //checks if player is near astroid and if true end the game
   let dead = dist(playerX, playerY, astroidX, astroidY);
-  if (dead < playerSize - radius/1.5) {
+  if (dead < playerSize + radius/3) {
     gamestate = "End";
     if (gamestate === "End") {
       return;
@@ -157,11 +159,15 @@ function movelaser() {
 //creates a star pattern
 function stars() {
   //fill(0, 0, random(25,200));
-  for (let sX = 0; sX < width; sX += 100) {
-    for (let sY = 0; sY < height + 100; sY += 10) {
-      fill(100, 100, 100);
-      circle(sX, sY, 2);
-    }
+  // for (let sX = 0; sX < width; sX += 100) {
+  //   for (let sY = 0; sY < height + 100; sY += 10) {
+  //     fill(100, 100, 100);
+  //     circle(sX, sY, 2);
+  //   }
+  // }
+  for (let i = 0; i < 20;+){
+    fill(255);
+    circle(sX[i],sY[i], 3);
   }
 }
 
