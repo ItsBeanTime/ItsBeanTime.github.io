@@ -8,14 +8,13 @@
 //https://p5js.org/examples/angles-and-motion-aim/
 
 let gamestate = "Game";
-let sX = [];
-let sY = [];
 
 // player variables
 let playerspeed = 5;
 let playerX;
 let playerY;
 let playerSize = 50;
+
 // laser variables
 let laserspeed = 15;
 let laseractive = false;
@@ -28,8 +27,8 @@ let laserRadius = playerSize / 2;
 // astroid variables
 let astroidX;
 let astroidY;
-let astroiddx = 4;
-let astroiddy = 4;
+let astroiddx = 6;
+let astroiddy = 6;
 let radius = 50;
 
 function setup() {
@@ -41,6 +40,8 @@ function setup() {
 }
 
 function draw() {
+  astroidRand();
+
   //checks if player is near astroid and if true end the game
   let dead = dist(playerX, playerY, astroidX, astroidY);
   if (dead < playerSize + radius/3) {
@@ -49,7 +50,7 @@ function draw() {
       return;
     }
   }
-
+  // calling fuctions
   background(0, 0, 25);
   stars();
   moveplayer();
@@ -98,17 +99,25 @@ function displayplayer() {
   pop();
 }
 
+function astroidRand(){
+  astroiddx += random(0.1, 1);
+  astroiddy += random(0.1, 1);
+  astroiddx -= random(0.1, 1);
+  astroiddy -= random(0.1, 1);
+}
 //pick a random corner to spawn
 function astroidlocation() {
   astroidX = random([-radius, width + radius]);
   astroidY = random([-radius, height + radius]);
 }
 
+//displays the stroid
 function displayastroid() {
   fill(200);
   circle(astroidX, astroidY, radius);
 }
 
+//bounce the astroid
 function bounce() { 
   if (astroidX > width - radius / 2 && astroiddx > 0) {
     astroiddx *= -1;
@@ -156,18 +165,14 @@ function movelaser() {
   }
 }
 
-//creates a star pattern
+//creates a "star" pattern but its more like a backround design right now
 function stars() {
-  //fill(0, 0, random(25,200));
-  // for (let sX = 0; sX < width; sX += 100) {
-  //   for (let sY = 0; sY < height + 100; sY += 10) {
-  //     fill(100, 100, 100);
-  //     circle(sX, sY, 2);
-  //   }
-  // }
-  for (let i = 0; i < 20;+){
-    fill(255);
-    circle(sX[i],sY[i], 3);
+  // fill(0, 0, random(25,200));
+  for (let sX = 0; sX < width; sX += 100) {
+    for (let sY = 0; sY < height + 100; sY += 10) {
+      fill(100, 100, 100);
+      circle(sX, sY, 3);
+    }
   }
 }
 
