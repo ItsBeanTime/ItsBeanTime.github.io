@@ -99,6 +99,7 @@ function displayplayer() {
   pop();
 }
 
+// randomize the dx and dy of the asteroid
 function astroidRand(){
   astroiddx += random(0.1, 1);
   astroiddy += random(0.1, 1);
@@ -111,13 +112,13 @@ function astroidlocation() {
   astroidY = random([-radius, height + radius]);
 }
 
-//displays the stroid
+//displays the asteroid
 function displayastroid() {
   fill(200);
   circle(astroidX, astroidY, radius);
 }
 
-//bounce the astroid
+//bounce the asteroid
 function bounce() { 
   if (astroidX > width - radius / 2 && astroiddx > 0) {
     astroiddx *= -1;
