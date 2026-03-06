@@ -9,61 +9,65 @@
 
 let gamestate = "Game";
 
-// player variables
-let playerspeed = 5;
-let playerX;
-let playerY;
-let playerSize = 50;
+// player variable
+let player = {
+  x:0,
+  y:0,
+  size: 50,
+  speed: 5, 
+};
 
-// laser variables
-let laserspeed = 15;
-let laseractive = false;
-let laserX;
-let laserY;
-let laserdx;
-let laserdy;
-let laserRadius = playerSize / 2;
+// laser variable
+let laser = {
+  x:0,
+  y:0,
+  dx:0,
+  dy:0,
+  speed: 15,
+  size: player.size /2,
+  active: false,
+};
 
 // astroid variables
-let astroidX;
-let astroidY;
-let astroiddx = 6;
-let astroiddy = 6;
-let radius = 50;
+let asteroid = {
+  x:0,
+  y:0,
+  dx:6,
+  dy:6,
+  radius:50,
+};
 
 function setup() {
+  player.x = width / 2;
+  player.y = height  / 2;
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
-  playerX = width / 2;
-  playerY = height / 2;
   astroidlocation();
 }
 
 function draw() {
-  astroidRand();
 
   //checks if player is near astroid and if true end the game
-  let dead = dist(playerX, playerY, astroidX, astroidY);
-  if (dead < playerSize + radius/3) {
+  let dead = dist(player.x, player.y, asteroid.x, asteroid.y);
+  if (dead < player.size + asteroid.radius/3) {
     gamestate = "End";
     if (gamestate === "End") {
       return;
     }
   }
-  // calling fuctions
+  // calling fuctions  
+  astroidRand();
   background(0, 0, 25);
   stars();
-  moveplayer();
   displayplayer();
+  moveplayer();
   displayastroid();
-
-  astroidX += astroiddx;
-  astroidY += astroiddy;
-
   bounce();
-
+  asteroid.x += asteroid.dx;
+  asteroid.y += asteroid.dy;
+ 
   //check if laseractive is true
-  if (laseractive) {
+  if (laser.active) {
     movelaser();
   }
 }
@@ -71,98 +75,98 @@ function draw() {
 //player movement
 function moveplayer() {
   if (keyIsDown(65)) {
-    playerX -= playerspeed;
+    player.x -= player.speed;
   }
   if (keyIsDown(68)) {
-    playerX += playerspeed;
+    player.x += player.speed;
   }
   if (keyIsDown(87)) {
-    playerY -= playerspeed;
+    player.y -= player.speed;
   }
   if (keyIsDown(83)) {
-    playerY += playerspeed;
+    player.y += player.speed;
   }
 
-  playerX = constrain(playerX, 0, width);
-  playerY = constrain(playerY, 0, height);
+  player.x = constrain(player.x, 0, width);
+  player.y = constrain(player.y, 0, height);
 }
 
 //make the player face towards the mouse
 function displayplayer() {
   push();
-  translate(playerX, playerY);
-  Angle = atan2(mouseY - playerY, mouseX - playerX);
+  translate(player.x, player.y);
+  Angle = atan2(mouseY - player.y, mouseX - player.x);
   fill(255);
   rotate(Angle);
   rectMode(CENTER);
-  rect(0, 0, playerSize, playerSize);
+  rect(0, 0, player.size, player.size);
   pop();
 }
 
 // randomize the dx and dy of the asteroid
 function astroidRand(){
-  astroiddx += random(0.1, 1);
-  astroiddy += random(0.1, 1);
-  astroiddx -= random(0.1, 1);
-  astroiddy -= random(0.1, 1);
+  asteroid.dx += random(0.1, 1);
+  asteroid.dy += random(0.1, 1);
+  asteroid.dx -= random(0.1, 1);
+  asteroid.dy -= random(0.1, 1);
 }
 //pick a random corner to spawn
 function astroidlocation() {
-  astroidX = random([-radius, width + radius]);
-  astroidY = random([-radius, height + radius]);
+  asteroid.x = random([-asteroid.radius, width + asteroid.radius]);
+  asteroid.y = random([-asteroid.radius, height + asteroid.radius]);
 }
 
 //displays the asteroid
 function displayastroid() {
   fill(200);
-  circle(astroidX, astroidY, radius);
+  circle(asteroid.x, asteroid.y, asteroid.radius);
 }
 
 //bounce the asteroid
 function bounce() { 
-  if (astroidX > width - radius / 2 && astroiddx > 0) {
-    astroiddx *= -1;
+  if (asteroid.x > width - asteroid.radius / 2 && asteroid.dx > 0) {
+    asteroid.dx *= -1;
   }
-  if (astroidX < radius / 2 && astroiddx < 0){
-    astroiddx *= -1;
+  if (asteroid.x < asteroid.radius / 2 && asteroid.dx < 0){
+    asteroid.dx *= -1;
   }
-  if (astroidY > height - radius / 2 && astroiddy > 0) {
-    astroiddy *= -1;
+  if (asteroid.y > height - asteroid.radius / 2 && asteroid.dy > 0) {
+    asteroid.dy *= -1;
   }
-  if (astroidY < radius /2 && astroiddy < 0){
-    astroiddy *= -1;
+  if (asteroid.y < asteroid.radius /2 && asteroid.dy < 0){
+    asteroid.dy *= -1;
   }
 }
 
 //check if mouse pressed then make the laser face towards player and make laser active
 function mousePressed() {
-  if (!laseractive) {
-    laserX = playerX;
-    laserY = playerY;
-    let angle2 = atan2(mouseY - playerY, mouseX - playerX);
-    laserdx = cos(angle2) * laserspeed;
-    laserdy = sin(angle2) * laserspeed;
-    laseractive = true;
+  if (!laser.active) {
+    laser.x = player.x;
+    laser.y = player.y;
+    let angle2 = atan2(mouseY - player.y, mouseX - player.x);
+    laser.dx = cos(angle2) * laser.speed;
+    laser.dy = sin(angle2) * laser.speed;
+    laser.active = true;
   }
 }
 
 //creates the laser and checks for collisions
 function movelaser() {
-  laserX += laserdx;
-  laserY += laserdy;
+  laser.x += laser.dx;
+  laser.y += laser.dy;
 
   fill(255, 0, 0);
-  circle(laserX, laserY, laserRadius);
+  circle(laser.x, laser.y, laser.size);
 
-  let distance = dist(laserX, laserY, astroidX, astroidY);
+  let distance = dist(laser.x, laser.y, asteroid.x, asteroid.y);
 
-  if (distance < laserRadius + radius/2.5) {
-    radius += 20;
+  if (distance < laser.size + asteroid.radius/2.5) {
+    asteroid.radius += 20;
     astroidlocation();
-    laseractive = false;
+    laser.active = false;
   }
-  if (laserX < 0 || laserX > width || laserY < 0 || laserY > height) {
-    laseractive = false;
+  if (laser.x < 0 || laser.x > width || laser.y < 0 || laser.y > height) {
+    laser.active = false;
   }
 }
 
@@ -179,10 +183,10 @@ function stars() {
 
 //lets the mousewheel control the player speed and the lasers speed
 function mouseWheel(event) {
-  playerspeed -= event.delta * 0.01;
-  playerspeed = constrain(playerspeed, 1, 30);
+  player.speed -= event.delta * 0.01;
+  player.speed = constrain(player.speed, 1, 30);
 
-  laserspeed -= event.delta * 0.01;
-  laserspeed = constrain(laserspeed, 15, 50);
-  console.log("speed is", playerspeed, "laser speed is", laserspeed);
+  laser.speed -= event.delta * 0.01;
+  laser.speed = constrain(laser.speed, 15, 50);
+  console.log("speed is", player.speed, "laser speed is", laser.speed);
 }
