@@ -17,16 +17,7 @@ let player = {
   speed: 5, 
 };
 
-// laser variable
-let laser = {
-  x:0,
-  y:0,
-  dx:0,
-  dy:0,
-  speed: 15,
-  size: player.size /2,
-  active: false,
-};
+let lasers = [];
 
 // astroid variables
 let asteroid = {
@@ -66,9 +57,8 @@ function draw() {
   asteroid.x += asteroid.dx;
   asteroid.y += asteroid.dy;
  
-  //check if laseractive is true
-  if (laser.active) {
-    movelaser();
+  for (let i = lasers.length - 1; i <= 0; i-- ){
+    movelaser(lasers[i], i);
   }
 }
 
@@ -140,18 +130,31 @@ function bounce() {
 
 //check if mouse pressed then make the laser face towards player and make laser active
 function mousePressed() {
-  if (!laser.active) {
-    laser.x = player.x;
-    laser.y = player.y;
-    let angle2 = atan2(mouseY - player.y, mouseX - player.x);
-    laser.dx = cos(angle2) * laser.speed;
-    laser.dy = sin(angle2) * laser.speed;
-    laser.active = true;
-  }
+//   if (!laser.active) {
+//     rectMode(CENTER);
+//     laser.x = player.x;
+//     laser.y = player.y;
+
+//     laser.dx = cos(angle2) * laser.speed;
+//     laser.dy = sin(angle2) * laser.speed;
+//     laser.active = true;
+//   } 
+  let angle2 = atan2(mouseY - player.y, mouseX - player.x);
+  let copyLasers = {
+    speed: 15,
+    x:player.x,
+    y:player.y,
+    dx: cos(angle2) * 15,
+    dy: sin(angle2) * 15,
+    size: player.size /2,
+  }; 
+  lasers.push(copyLaser);
 }
 
+
+
 //creates the laser and checks for collisions
-function movelaser() {
+function movelaser(laser, i) {
   laser.x += laser.dx;
   laser.y += laser.dy;
 
@@ -163,11 +166,12 @@ function movelaser() {
   if (distance < laser.size + asteroid.radius/2.5) {
     asteroid.radius += 20;
     astroidlocation();
-    laser.active = false;
+    laser.hit = true;
   }
   if (laser.x < 0 || laser.x > width || laser.y < 0 || laser.y > height) {
-    laser.active = false;
+    laser.splice(i,1);
   }
+
 }
 
 //creates a "star" pattern but its more like a backround design right now
