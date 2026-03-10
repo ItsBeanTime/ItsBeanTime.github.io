@@ -7,7 +7,7 @@
 
 //https://p5js.org/examples/angles-and-motion-aim/
 
-let gamestate = "Game";
+let gamestate = "title";
 
 // player variable
 let player = {
@@ -19,46 +19,59 @@ let player = {
 
 let lasers = [];
 
-// astroid variables
-let asteroid = {
-  x:0,
-  y:0,
-  dx:6,
-  dy:6,
-  radius:50,
-};
+let asteroids = [];
 
 function setup() {
-  player.x = width / 2;
-  player.y = height  / 2;
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
-  astroidlocation();
+  background(0);
+
+  player.x = width / 2;
+  player.y = height / 2;
+
+  spawnasteroid();
 }
 
 function draw() {
-
-  //checks if player is near astroid and if true end the game
-  let dead = dist(player.x, player.y, asteroid.x, asteroid.y);
-  if (dead < player.size + asteroid.radius/3) {
-    gamestate = "End";
-    if (gamestate === "End") {
-      return;
-    }
+  
+  if (gamestate === "title"){
+    fill(255);
+    text('Click R to Start', width /2, height/2); 
   }
-  // calling fuctions  
-  astroidRand();
-  background(0, 0, 25);
-  stars();
-  displayplayer();
-  moveplayer();
-  displayastroid();
-  bounce();
-  asteroid.x += asteroid.dx;
-  asteroid.y += asteroid.dy;
+  //checks if player is near astroid and if true end the game
  
-  for (let i = lasers.length - 1; i <= 0; i-- ){
-    movelaser(lasers[i], i);
+  if (gamestate === "End") {
+    background(0);
+    text('Click R to Restart', width/2,height/2);
+  }
+  if (keyIsDown(82)){
+    gamestate = "game";
+  }
+  
+  if (gamestate === "game") {
+
+    background(0, 0, 25);
+    stars();
+    displayplayer();
+    moveplayer();
+
+    for (let asteroid of asteroids){
+      displayasteroid(asteroid);
+      bounce(asteroid);
+      asteroidRand(asteroid);
+
+      asteroid.x += asteroid.dx;
+      asteroid.y += asteroid.dy;
+      
+      let dead = dist(player.x, player.y, asteroid.x, asteroid.y);
+      if (dead < player.size + asteroid.radius/3) {
+        gamestate = "End";
+      }
+    }
+    
+    for (let i = lasers.length - 1; i >= 0; i-- ){
+      movelaser(lasers[i], i);
+    }
   }
 }
 
@@ -85,35 +98,41 @@ function moveplayer() {
 function displayplayer() {
   push();
   translate(player.x, player.y);
-  Angle = atan2(mouseY - player.y, mouseX - player.x);
+  let angle = atan2(mouseY - player.y, mouseX - player.x);
   fill(255);
-  rotate(Angle);
+  rotate(angle);
   rectMode(CENTER);
   rect(0, 0, player.size, player.size);
   pop();
 }
 
+function spawnasteroid(){
+  let asteroidcopy = {
+    x: random([-50, width + 50]),
+    y: random([-50, height + 50]),
+    dx:6,
+    dy:6,
+    radius:50,
+  };
+  asteroids.push(asteroidcopy);
+}
+
 // randomize the dx and dy of the asteroid
-function astroidRand(){
+function asteroidRand(asteroid){
   asteroid.dx += random(0.1, 1);
   asteroid.dy += random(0.1, 1);
   asteroid.dx -= random(0.1, 1);
   asteroid.dy -= random(0.1, 1);
 }
-//pick a random corner to spawn
-function astroidlocation() {
-  asteroid.x = random([-asteroid.radius, width + asteroid.radius]);
-  asteroid.y = random([-asteroid.radius, height + asteroid.radius]);
-}
 
 //displays the asteroid
-function displayastroid() {
+function displayasteroid(asteroid) {
   fill(200);
   circle(asteroid.x, asteroid.y, asteroid.radius);
 }
 
 //bounce the asteroid
-function bounce() { 
+function bounce(asteroid) { 
   if (asteroid.x > width - asteroid.radius / 2 && asteroid.dx > 0) {
     asteroid.dx *= -1;
   }
@@ -130,27 +149,16 @@ function bounce() {
 
 //check if mouse pressed then make the laser face towards player and make laser active
 function mousePressed() {
-//   if (!laser.active) {
-//     rectMode(CENTER);
-//     laser.x = player.x;
-//     laser.y = player.y;
-
-//     laser.dx = cos(angle2) * laser.speed;
-//     laser.dy = sin(angle2) * laser.speed;
-//     laser.active = true;
-//   } 
   let angle2 = atan2(mouseY - player.y, mouseX - player.x);
   let copyLasers = {
-    speed: 15,
     x:player.x,
     y:player.y,
     dx: cos(angle2) * 15,
     dy: sin(angle2) * 15,
     size: player.size /2,
   }; 
-  lasers.push(copyLaser);
+  lasers.push(copyLasers);
 }
-
 
 
 //creates the laser and checks for collisions
@@ -161,17 +169,22 @@ function movelaser(laser, i) {
   fill(255, 0, 0);
   circle(laser.x, laser.y, laser.size);
 
-  let distance = dist(laser.x, laser.y, asteroid.x, asteroid.y);
+  for (let asteroid of asteroids){
+    let distance = dist(laser.x, laser.y, asteroid.x, asteroid.y);
 
-  if (distance < laser.size + asteroid.radius/2.5) {
-    asteroid.radius += 20;
-    astroidlocation();
-    laser.hit = true;
+    if (distance < laser.size + asteroid.radius/2.5) {
+      asteroid.radius += 20;
+      asteroid.x =  random([-50, width + 50]),
+      asteroid.y =  random([-50, height + 50]),
+
+      lasers.splice(i, 1);
+      break;
+    }
   }
+
   if (laser.x < 0 || laser.x > width || laser.y < 0 || laser.y > height) {
-    laser.splice(i,1);
+    lasers.splice(i,1);
   }
-
 }
 
 //creates a "star" pattern but its more like a backround design right now
@@ -190,7 +203,12 @@ function mouseWheel(event) {
   player.speed -= event.delta * 0.01;
   player.speed = constrain(player.speed, 1, 30);
 
-  laser.speed -= event.delta * 0.01;
-  laser.speed = constrain(laser.speed, 15, 50);
-  console.log("speed is", player.speed, "laser speed is", laser.speed);
+  console.log("speed is", player.speed,);
 }
+
+function keyPressed(){
+  if (key === "e") {
+    spawnasteroid();
+  }
+}
+
