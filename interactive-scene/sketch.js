@@ -8,7 +8,8 @@
 //https://p5js.org/examples/angles-and-motion-aim/
 
 let gamestate = "title";
-
+let counter = 0;
+let best = 0;
 // player variable
 let player = {
   x:0,
@@ -22,6 +23,7 @@ let lasers = [];
 let asteroids = [];
 
 function setup() {
+
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
   background(0);
@@ -33,25 +35,30 @@ function setup() {
 }
 
 function draw() {
-  
+
   if (gamestate === "title"){
     fill(255);
-    text('Click R to Start', width /2, height/2); 
+    textSize(50);
+    text('Click R to Start', width /3, height/2); 
   }
   //checks if player is near astroid and if true end the game
  
   if (gamestate === "End") {
     background(0);
-    text('Click R to Restart', width/2,height/2);
+    text('Click R to Revive Yourself or Restart the Window to Play Again', width/3,height/2);
   }
   if (keyIsDown(82)){
     gamestate = "game";
   }
   
   if (gamestate === "game") {
-
     background(0, 0, 25);
     stars();
+    fill(255);
+    textSize(40);
+    textAlign(CENTER);
+    text(`Points: ${counter} Best: ${best}`, width/2, height/5);
+    asteroidTimer();
     displayplayer();
     moveplayer();
 
@@ -65,6 +72,11 @@ function draw() {
       
       let dead = dist(player.x, player.y, asteroid.x, asteroid.y);
       if (dead < player.size + asteroid.radius/3) {
+        asteroid.x = 0;
+        asteroid.y = 0;
+        asteroid.size = 20;
+        best = counter;
+        counter = 0;
         gamestate = "End";
       }
     }
@@ -110,8 +122,8 @@ function spawnasteroid(){
   let asteroidcopy = {
     x: random([-50, width + 50]),
     y: random([-50, height + 50]),
-    dx:6,
-    dy:6,
+    dx:4,
+    dy:4,
     radius:50,
   };
   asteroids.push(asteroidcopy);
@@ -173,7 +185,11 @@ function movelaser(laser, i) {
     let distance = dist(laser.x, laser.y, asteroid.x, asteroid.y);
 
     if (distance < laser.size + asteroid.radius/2.5) {
-      asteroid.radius += 20;
+      counter++;
+      if (asteroid.radius < 90){
+        asteroid.radius += 5;
+      }
+ 
       asteroid.x =  random([-50, width + 50]),
       asteroid.y =  random([-50, height + 50]),
 
@@ -183,7 +199,7 @@ function movelaser(laser, i) {
   }
 
   if (laser.x < 0 || laser.x > width || laser.y < 0 || laser.y > height) {
-    lasers.splice(i,1);
+    lasers.splice(i, 1);
   }
 }
 
@@ -208,6 +224,12 @@ function mouseWheel(event) {
 
 function keyPressed(){
   if (key === "e") {
+    spawnasteroid();
+  }
+}
+
+function asteroidTimer(){
+  if (frameCount % 500 === 0){
     spawnasteroid();
   }
 }
