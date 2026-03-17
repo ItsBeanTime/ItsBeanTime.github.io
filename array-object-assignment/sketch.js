@@ -3,7 +3,7 @@
 // 3/17/2026
 //
 // Extra for Experts:
-// 
+// im using framecount as a timer
 
 //https://p5js.org/examples/angles-and-motion-aim/
 
@@ -25,9 +25,9 @@ let asteroids = [];// laser array
 
 function setup() {
 
-  createCanvas(windowWidth, windowHeight);
-  angleMode(DEGREES);
-  background(0);
+  createCanvas(windowWidth, windowHeight); // makes height and width the screen size
+  angleMode(DEGREES); 
+  background(0); // sets background to black
 
   player.x = width / 2; // put the player into the center of the screen
   player.y = height / 2;
@@ -40,14 +40,22 @@ function draw() {
   if (gamestate === "title"){
     fill(255);
     textSize(50);
-    text('Click R to Start', width /3, height/2); 
+    textAlign(CENTER);
+    text('Click R to Start', width /2, height/2); 
   }
   //checks if player is near astroid and if true end the game
  
   if (gamestate === "End") {
     background(0);
-    text('Click R to Revive Yourself or Restart the Window to Play Again', width/3,height/2);
+    fill(255);
+    textAlign(CENTER);
+    asteroids.length = 1; // sets the amount of asteroids on screen back to 1
+    player.x = width/2;
+    player.y = height/2;
+    text('Click R to Play Again', width/2,height/2);
   }
+  
+
   if (keyIsDown(82)){
     gamestate = "game";
   }
@@ -58,12 +66,13 @@ function draw() {
     fill(255);
     textSize(40);
     textAlign(CENTER);
+    text(`Player Speed: ${Math.floor(player.speed)}`, 20, height/8); 
     text(`Points: ${counter} Best: ${best}`, width/2, height/5);
     asteroidTimer();
     displayplayer();
     moveplayer();
 
-    for (let asteroid of asteroids){
+    for (let asteroid of asteroids){ // asteroid
       displayasteroid(asteroid);
       bounce(asteroid);
       asteroidRand(asteroid);
@@ -76,7 +85,9 @@ function draw() {
         asteroid.x = 0;
         asteroid.y = 0;
         asteroid.size = 20;
-        best = counter;
+        if (counter > best){
+          best = counter;
+        }
         counter = 0;
         gamestate = "End";
       }
@@ -134,10 +145,10 @@ function spawnasteroid(){
 
 // randomize the dx and dy of the asteroid
 function asteroidRand(asteroid){
-  asteroid.dx += random(0.1, 1);
-  asteroid.dy += random(0.1, 1);
-  asteroid.dx -= random(0.1, 1);
-  asteroid.dy -= random(0.1, 1);
+  asteroid.dx += random(0.1, 0.6);
+  asteroid.dy += random(0.1, 0.6);
+  asteroid.dx -= random(0.1, 0.6);
+  asteroid.dy -= random(0.1, 0.6);
 }
 
 //displays the asteroid
@@ -225,13 +236,13 @@ function mouseWheel(event) {
   console.log("speed is", player.speed,);
 }
 
-function keyPressed(){
+function keyPressed(){ // spawn an asteroid
   if (key === "e") {
     spawnasteroid();
   }
 }
 
-function asteroidTimer(){
+function asteroidTimer(){ // spawns an asteroid every few seconds
   if (frameCount % 500 === 0){
     spawnasteroid();
   }
