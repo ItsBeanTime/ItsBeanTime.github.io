@@ -7,20 +7,21 @@
 
 //https://p5js.org/examples/angles-and-motion-aim/
 
-let gamestate = "title";
-let counter = 0;
-let best = 0;
-// player variable
-let player = {
+let gamestate = "title"; // sets the gamestate to title
+let counter = 0; // sets the timer to 0
+let best = 0; // sets new best to 0
+
+
+let player = { // player variable
   x:0,
   y:0,
   size: 50,
   speed: 5, 
 };
 
-let lasers = [];
+let lasers = []; // laser array
 
-let asteroids = [];
+let asteroids = [];// laser array
 
 function setup() {
 
@@ -28,10 +29,10 @@ function setup() {
   angleMode(DEGREES);
   background(0);
 
-  player.x = width / 2;
+  player.x = width / 2; // put the player into the center of the screen
   player.y = height / 2;
 
-  spawnasteroid();
+  spawnasteroid(); // spawn the first asteroid
 }
 
 function draw() {
@@ -89,19 +90,20 @@ function draw() {
 
 //player movement
 function moveplayer() {
-  if (keyIsDown(65)) {
+  if (keyIsDown(65)) { // move left
     player.x -= player.speed;
   }
-  if (keyIsDown(68)) {
+  if (keyIsDown(68)) { // move right
     player.x += player.speed;
   }
-  if (keyIsDown(87)) {
+  if (keyIsDown(87)) { // move up
     player.y -= player.speed;
   }
-  if (keyIsDown(83)) {
+  if (keyIsDown(83)) { // move down
     player.y += player.speed;
   }
 
+  // contrains the player in the window
   player.x = constrain(player.x, 0, width);
   player.y = constrain(player.y, 0, height);
 }
@@ -118,6 +120,7 @@ function displayplayer() {
   pop();
 }
 
+// spawns a asteroid at a random corner
 function spawnasteroid(){
   let asteroidcopy = {
     x: random([-50, width + 50]),
