@@ -6,6 +6,7 @@
 - [Image Demo](03-images)
 - [Ball Array](04-ball-array)
 - [Perlin Noise](06-noise)
+- [2D Grid](07-grid)
 
 ## Assignments
 - [Interactive Scene](interactive-scene)
