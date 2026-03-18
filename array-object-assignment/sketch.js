@@ -63,12 +63,15 @@ function draw() {
   if (gamestate === "game") {
     background(0, 0, 25);
     stars();
+    
+    // text display points and best along with player speed
     fill(255);
     textSize(40);
     textAlign(CENTER);
     text(`Player Speed: ${Math.floor(player.speed)}`, 20, height/8); 
     text(`Points: ${counter} Best: ${best}`, width/2, height/5);
     asteroidTimer();
+
     displayplayer();
     moveplayer();
 
