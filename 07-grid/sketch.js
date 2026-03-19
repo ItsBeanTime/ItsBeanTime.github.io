@@ -2,12 +2,15 @@
 // learning 2d arrays
 
 
-let theGrid =
-[[1,0,0,0],
-  [1,0,1,0],
-  [0,1,0,0],
-  [0,0,1,1]];
-const SQUARE_DIMENSION = theGrid.length;
+// let theGrid =
+// [[1,0,0,0],
+//   [1,0,1,0],
+//   [0,1,0,0],
+//   [0,0,1,1]];
+// const SQUARE_DIMENSION = theGrid.length;
+
+const SQUARE_DIMENSION = 10;
+let theGrid;
 
 let cellSize;
 
@@ -19,6 +22,7 @@ function setup() {
   else {
     cellSize = width / SQUARE_DIMENSION;
   }
+  theGrid = randomizeGrid(SQUARE_DIMENSION, SQUARE_DIMENSION);
 }
   
 
@@ -40,6 +44,35 @@ function showGrid() {
     }
   }
 }
-// function mousePressed(){
-//   if ()
-// }
+
+function mousePressed(){
+  let x = Math.floor(mouseX/cellSize);
+  let y = Math.floor(mouseY/cellSize);
+
+  toggleCell(x, y);
+}
+
+function toggleCell(x, y){
+  if (theGrid[y][x] === 1) {
+    theGrid[y][x] = 0;
+  }
+  else if (theGrid[y][x] === 0) {
+    theGrid[y][x] = 1;
+  }
+}
+
+function randomizeGrid(cols, rows){
+  let newGrid = [];
+  for (let y = 0; y < rows; y++){
+    newGrid.push([]);
+    for (let x = 0; x < cols; x++) {
+      if (random(100) < 50) {
+        newGrid[y].push(0);
+      }
+      else {
+        newGrid[y].push(1);
+      }
+    }
+  }
+  return newGrid;
+}
