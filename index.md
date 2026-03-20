@@ -11,4 +11,5 @@
 ## Assignments
 - [Interactive Scene](interactive-scene)
 - [Object notation & Arrays](array-object-assignment)
+- [2D Arrays](2d-array)
 
