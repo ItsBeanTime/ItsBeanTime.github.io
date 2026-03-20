@@ -7,6 +7,7 @@
 - [Ball Array](04-ball-array)
 - [Perlin Noise](06-noise)
 - [2D Grid](07-grid)
+- [Rectangular Grid](08-rectgrid)
 
 ## Assignments
 - [Interactive Scene](interactive-scene)
