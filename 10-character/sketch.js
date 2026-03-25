@@ -14,7 +14,7 @@ let thePlayer = {
 let pathimg;
 let lavaimg;
 
-function preLoad(){
+function preload(){
   pathimg = loadImage("path.jpg");
   lavaimg = loadImage("lava.jpg");
 }
