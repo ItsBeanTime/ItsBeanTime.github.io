@@ -5,3 +5,6 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+const CELL_SIZE = 20;
+const GROUND = 1;
+
