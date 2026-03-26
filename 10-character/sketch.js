@@ -10,7 +10,7 @@ let grid;
 let thePlayer = {
   x: 0,
   y: 4,
-};
+};	
 let pathimg;
 let lavaimg;
 
