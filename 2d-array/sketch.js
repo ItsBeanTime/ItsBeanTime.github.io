@@ -7,13 +7,10 @@
 
 // Constants
 const CELL_SIZE = 64;
-const GROUND = 1;
 
 let rows;
 let cols;
 let grid;
-
-
 
 // Image variables
 let iconImg;
@@ -31,30 +28,47 @@ function preload(){
 }
 
 function setup(){
-
+  
 
   createCanvas(windowWidth, windowHeight);
+  rows = Math.floor(height);
+  cols = Math.floor(width);
+  grid = [[],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [2,2,2,2,2,0,2,2,2,2],
+    [2,2,2,2,2,1,2,1,2,2],
+
+
+
+  ];
+
   image(backgroundImg, 0, 0, width, height - CELL_SIZE * 3);
-  image(blockImg, CELL_SIZE * 12, height - CELL_SIZE * 4, CELL_SIZE, CELL_SIZE);
 
 }
 
 function draw(){
-
-  let thePlayer = {
-    x: 0,
-    y: height + CELL_SIZE * 8 - 6,
-  };
-
   for (let i = 0; i < CELL_SIZE * 35; i += CELL_SIZE * 3){
-    image(groundImg, i, height - CELL_SIZE * 3, CELL_SIZE * 3, CELL_SIZE * 3);
+    image(groundImg, i, height - CELL_SIZE * 3.5, CELL_SIZE * 3.5, CELL_SIZE * 3.5);
   }
-  for (let j = 0; j < CELL_SIZE * 3; j+= CELL_SIZE){
-    image(spikeImg, j + CELL_SIZE* 13, height - CELL_SIZE * 4, CELL_SIZE, CELL_SIZE);
-  }
-  
-  for (let start = 0; start < 100; start += 10){
-    image(iconImg, thePlayer.x, thePlayer.y, CELL_SIZE, CELL_SIZE);
-    thePlayer.x += start;
+  spawnSpike();
+}
+
+function spawnSpike(){
+  for (let y = 0; y < rows; y++){
+    for (let x = 0; x < cols; x++){
+      if (grid[y][x] === 0){
+        image(spikeImg, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      }
+      else if (grid[y][x] === 1){
+        image(blockImg, x * CELL_SIZE, y * CELL_SIZE , CELL_SIZE, CELL_SIZE);
+      }
+    }
   }
 }
+
