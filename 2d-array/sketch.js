@@ -8,43 +8,110 @@
 // Constants
 const CELL_SIZE = 64;
 
+let tilesHigh, tilesWide;
+let tileWidth, tileHeight;
 let lines;
 let level;
-let rows;
-let cols;
 
 // Image variables
-let iconImg;
-let groundImg;
-let blockImg;
-let backgroundImg;
-let spikeImg;
+let icon;
+let ground;
+let block;
+let background;
+let spike;
+let empty;
+
+let player = {
+  x: 0,
+  y: 0,
+};
+
+
 
 function preload(){
   level = "assets/level.txt";
   lines = loadStrings(level);
 
-  backgroundImg = loadImage("gd-background.png");
-  blockImg = loadImage("gd-block.png");
-  groundImg = loadImage("gd-ground.png");
-  spikeImg = loadImage("gd-spike.png");
-  iconImg = loadImage("gd-cube2.png");
+  empty = loadImage("empty.png");
+  background = loadImage("gd-background.png");
+  block = loadImage("gd-block.png");
+  ground = loadImage("gd-ground.png");
+  spike = loadImage("gd-spike.png");
+  icon = loadImage("gd-cube2.png");
 }
 
 function setup(){
   createCanvas(windowWidth, windowHeight);
-  rows = Math.floor(height);
-  cols = Math.floor(width);
 
-  image(backgroundImg, 0, 0, width, height - CELL_SIZE * 3);
+  tilesHigh = lines.length;
+  tilesWide = lines[0].length;
 
+  tileWidth = CELL_SIZE;
+  tileHeight = CELL_SIZE;
+
+  tiles = createEmptyArray(tilesWide, tilesHigh);
+
+  for (let y = 0; y < tilesHigh; y++){
+    for (let x = 0; x < tilesWide; x++){
+      let tileType = lines[y][x];
+      tiles[y][x] = tileType;
+    }
+  }
 }
 
 function draw(){
-  for (let i = 0; i < CELL_SIZE * 35; i += CELL_SIZE * 3){
-    image(groundImg, i, height - CELL_SIZE * 3.5, CELL_SIZE * 3.5, CELL_SIZE * 3.5);
-  }
-  image(iconImg, 0, height - CELL_SIZE * 4.5, CELL_SIZE, CELL_SIZE);
+  display();
+  playerDisplay();
+  playerMove();
 }
+
+function playerDisplay(){
+  player.y = CELL_SIZE * 9;
+
+  image(icon, player.x, player.y, CELL_SIZE, CELL_SIZE);
+}
+
+function playerMove(){
+//   if (keyIsDown(68)){
+//     player.x += 3;
+//   }
+// }
+  player.x += 5;
+}
+function display(){
+  image(background, 0, 0, width, height - CELL_SIZE * 3);  
+  for (let i = 0; i < CELL_SIZE * 35; i += CELL_SIZE * 3){
+    image(ground, i, height - CELL_SIZE * 3.5, CELL_SIZE * 3.5, CELL_SIZE * 3.5);
+  } 
+  for(let y = 0; y < tilesHigh; y++){
+    for(let x = 0; x < tilesWide; x++){
+      showTile(tiles[y][x], x, y);
+    }
+  }
+}
+
+function showTile(location, x, y){
+  if (location === "s"){
+    image(spike, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if (location === "b"){
+    image(block, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+  else{
+    image(empty, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+  }
+}
+
+function createEmptyArray(cols, rows){
+  let randomGrid = [];
+  for (let y = 0; y < rows; y++) {
+    randomGrid.push([]);
+    for (let x = 0; x < cols; x++) {
+      randomGrid[y].push(0);
+    }
+  }
+  return randomGrid;
+}
+
 
 
