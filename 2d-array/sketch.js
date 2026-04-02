@@ -25,7 +25,7 @@ let player = {
   x: 0,
   y: 0,
 };
-
+let startScroll = false;
 
 
 function preload(){
@@ -72,11 +72,13 @@ function playerDisplay(){
 }
 
 function playerMove(){
-//   if (keyIsDown(68)){
-//     player.x += 3;
-//   }
-// }
-  player.x += 5;
+  if (player.x < CELL_SIZE * 5){
+    player.x += 7;
+  }
+  else{
+    startScroll = true;
+  }
+
 }
 function display(){
   image(background, 0, 0, width, height - CELL_SIZE * 3);  
@@ -99,7 +101,7 @@ function showTile(location, x, y){
   }
   else{
     image(empty, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-  }
+  } 
 }
 
 function createEmptyArray(cols, rows){
@@ -112,6 +114,7 @@ function createEmptyArray(cols, rows){
   }
   return randomGrid;
 }
+
 
 
 
