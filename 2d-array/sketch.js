@@ -8,6 +8,7 @@
 // Constants
 const CELL_SIZE = 64;
 
+let isJumping = false;
 let tilesHigh, tilesWide;
 let tileWidth, tileHeight;
 let lines;
@@ -42,6 +43,7 @@ function preload(){
 
 function setup(){
   createCanvas(windowWidth, windowHeight);
+  player.y = CELL_SIZE * 9;
 
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
@@ -66,8 +68,6 @@ function draw(){
 }
 
 function playerDisplay(){
-  player.y = CELL_SIZE * 9;
-
   image(icon, player.x, player.y, CELL_SIZE, CELL_SIZE);
 }
 
@@ -75,10 +75,22 @@ function playerMove(){
   if (player.x < CELL_SIZE * 5){
     player.x += 7;
   }
-  else{
-    startScroll = true;
+  if (isJumping === false){
+    if (player.y <= CELL_SIZE *8.9){
+      player.y += 10;
+    }
+    else if (keyIsDown(32)){
+      isJumping = true;
+    }
   }
-
+  if (isJumping === true){
+    if (player.y >= CELL_SIZE * 7){
+      player.y -= 10;
+    }
+    else{
+      isJumping = false;
+    }
+  }
 }
 function display(){
   image(background, 0, 0, width, height - CELL_SIZE * 3);  
