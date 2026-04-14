@@ -25,6 +25,7 @@ let empty;
 let player = {
   x: 0,
   y: 0,
+  jumpSpeed: 1,
 };
 let startScroll = false;
 
@@ -42,8 +43,8 @@ function preload(){
 }
 
 function setup(){
-  createCanvas(windowWidth, windowHeight);
-  player.y = CELL_SIZE * 9;
+  createCanvas(1900, 925);
+  player.y = CELL_SIZE * 9.5;
 
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
@@ -76,7 +77,7 @@ function playerMove(){
     player.x += 7;
   }
   if (isJumping === false){
-    if (player.y <= CELL_SIZE *8.9){
+    if (player.y <= CELL_SIZE *9.9){
       player.y += 10;
     }
     else if (keyIsDown(32)){
@@ -85,7 +86,7 @@ function playerMove(){
   }
   if (isJumping === true){
     if (player.y >= CELL_SIZE * 7){
-      player.y -= 10;
+      player.y *= - player.jumpSpeed;
     }
     else{
       isJumping = false;
