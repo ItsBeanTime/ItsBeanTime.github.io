@@ -12,6 +12,7 @@ let titleScreen = true;
 let cellSize;
 let rotation = 0;
 
+let canMove = true;
 let canScroll = true;
 let screenScroll = 0;
 let screenSpeed;
@@ -95,12 +96,12 @@ function draw(){
 }
 
 function mousePressed(){
-  if (titleScreen === true){
+  if (titleScreen === true && mouseX >= width/2 - width/12 && mouseX <= width/2 + width/12 &&
+     mouseY >= height/2 - width/12 && mouseY <= height/2 + width/12){
+    titleScreen = false;
+    firstLevel = true;
     screenScroll = -cellSize * 0.1;
   }
-  firstLevel = true;
-  titleScreen = false;
-
 }
 
 function playerDisplay(){
@@ -137,7 +138,7 @@ function playerMove(){
       screenScroll += screenSpeed;
     }    
   } 
-  else if (canScroll === false) {
+  else if (canScroll === false && canMove === true) {
     player.x += screenSpeed;    
   }
   
@@ -150,12 +151,13 @@ function playerMove(){
   let top = getTile(player.x + cellSize / 2, player.y);
   let front = getTile(player.x + cellSize, player.y + cellSize / 2);
   let spikeHitbox = getTile(player.x + cellSize * 0.5, player.y + cellSize * 0.45);
-  let finishHitbox = getTile(player.x + cellSize / 2, player.y + cellSize /2);
+  let finishHitbox = getTile(player.x + cellSize * 6, player.y + cellSize /2);
   let stopScrollHitbox = getTile(player.x + cellSize / 2, player.y + cellSize / 2);
 
 
   if (finishHitbox === "F"){
-    noLoop();
+    canMove = false;
+    endAnimation();
   }
   if (stopScrollHitbox === "P"){
     canScroll = false;
@@ -192,15 +194,13 @@ function playerMove(){
 
 function displayTitle(){
   screenScroll += screenSpeed - 1;
-
   let bgScroll = screenScroll * 0.3; 
-
   let groundY = height - cellSize * 3;
 
   image(background, -bgScroll % width, 0, width, height - cellSize * 3);
   image(background, -bgScroll % width + width, 0, width, height - cellSize * 3);
   imageMode(CENTER);
-  image(title, width/2, height/6, width /1.5, height /1.5);
+  image(title, width/1.8, height/6, width /1.5, height /1.5);
   rectMode(CENTER); 
   square(width/2, height/2, width /6);   
   imageMode(CORNER);
@@ -211,7 +211,6 @@ function displayTitle(){
 
 function display(){
   let bgScroll = screenScroll * 0.3;
-
   let groundY = height - cellSize * 3;
 
   image(background, -bgScroll % width, 0, width, height - cellSize * 3);
@@ -243,6 +242,11 @@ function showTile(location, x, y){
   else{
     image(empty, x * tileWidth - screenScroll, y * tileHeight, tileWidth, tileHeight);
   } 
+}
+
+function endAnimation(){
+  player.y -= cellSize * 0.2;
+  player.x -= cellSize * 0.2;
 }
 
 function createEmptyArray(cols, rows){
