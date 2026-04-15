@@ -5,14 +5,20 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-// Constants
-const CELL_SIZE = 64;
+let cellSize;
+let rotation = 0;
 
-let isJumping = false;
+let canScroll = true;
+let screenScroll = 0;
+let screenSpeed;
 let tilesHigh, tilesWide;
 let tileWidth, tileHeight;
 let lines;
 let level;
+
+// Jump variables
+let gravity;
+let jumpStrength;
 
 // Image variables
 let icon;
@@ -21,19 +27,21 @@ let block;
 let background;
 let spike;
 let empty;
+let end;
 
 let player = {
   x: 0,
   y: 0,
-  jumpSpeed: 1,
+  vy: 1,
 };
-let startScroll = false;
+
 
 
 function preload(){
   level = "assets/level.txt";
   lines = loadStrings(level);
 
+  end = loadImage("gd-end.png")
   empty = loadImage("empty.png");
   background = loadImage("gd-background.png");
   block = loadImage("gd-block.png");
@@ -43,14 +51,21 @@ function preload(){
 }
 
 function setup(){
-  createCanvas(1900, 925);
-  player.y = CELL_SIZE * 9.5;
+
+  createCanvas(windowWidth, windowHeight);
+  cellSize = height / 12;
+  player.y = cellSize * 9.5;
+
+  gravity = cellSize * 0.019;
+  jumpStrength = -cellSize * 0.3;
+
+  screenSpeed = cellSize * 0.12;
 
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
 
-  tileWidth = CELL_SIZE;
-  tileHeight = CELL_SIZE;
+  tileWidth = cellSize;
+  tileHeight = cellSize;
 
   tiles = createEmptyArray(tilesWide, tilesHigh);
 
@@ -69,35 +84,104 @@ function draw(){
 }
 
 function playerDisplay(){
-  image(icon, player.x, player.y, CELL_SIZE, CELL_SIZE);
+  if (player.vy !== 0){
+    rotation += 0.1;
+  }
+
+  push();
+  translate(player.x + cellSize/2, player.y + cellSize/2);
+  rotate(rotation);
+  imageMode(CENTER);
+  image(icon, 0, 0, cellSize, cellSize);
+  pop();
+
+  imageMode(CORNER);
+}
+
+function getTile(x,y){
+  let col = floor((x + screenScroll) / tileWidth);
+  let row = floor(y / tileHeight);
+
+  if (row >= 0 && row < tilesHigh && col >= 0 && col < tilesWide){
+    return tiles[row][col];
+  }
+  return "";
 }
 
 function playerMove(){
-  if (player.x < CELL_SIZE * 5){
-    player.x += 7;
-  }
-  if (isJumping === false){
-    if (player.y <= CELL_SIZE *9.9){
-      player.y += 10;
-    }
-    else if (keyIsDown(32)){
-      isJumping = true;
-    }
-  }
-  if (isJumping === true){
-    if (player.y >= CELL_SIZE * 7){
-      player.y *= - player.jumpSpeed;
+  
+  if (canScroll === true){
+    if (player.x < cellSize * 5){
+      player.x += screenSpeed;
     }
     else{
-      isJumping = false;
+      screenScroll += screenSpeed;
+    }    
+  } 
+  else if (canScroll === false) {
+    player.x += screenSpeed;    
+  }
+  
+  player.vy += gravity
+  player.y += player.vy;
+
+  let groundLevel = cellSize * 8;
+
+  let bottom = getTile(player.x + cellSize / 2, player.y + cellSize);
+  let top = getTile(player.x + cellSize / 2, player.y);
+  let front = getTile(player.x + cellSize, player.y + cellSize / 2);
+  let spikeHitbox = getTile(player.x + cellSize * 0.5, player.y + cellSize * 0.45);
+  let finishHitbox = getTile(player.x + cellSize / 2, player.y + cellSize /2);
+  let stopScrollHitbox = getTile(player.x + cellSize / 2, player.y + cellSize / 2);
+
+
+  if (finishHitbox === "F"){
+    noLoop();
+  }
+  if (stopScrollHitbox === "P"){
+    canScroll = false;
+  }
+  if (spikeHitbox === "s"){
+    screenScroll = -cellSize * 4;
+  }
+
+  if (bottom === "b"){
+    player.y = floor((player.y + cellSize) / cellSize) * cellSize - cellSize;
+    player.vy = 0;
+
+    rotation = round(rotation / 90) * 90;
+
+    if (keyIsDown(32)){
+      player.vy = jumpStrength;
+    }
+  }
+  else if (top === "b" || front === "b"){
+    screenScroll = -cellSize * 4;
+  }
+
+  else if (player.y >= groundLevel){
+    player.y = groundLevel;
+    player.vy = 0;
+
+    rotation = round(rotation / 90) * 90;
+
+    if (keyIsDown(32)){
+      player.vy = jumpStrength;
     }
   }
 }
 function display(){
-  image(background, 0, 0, width, height - CELL_SIZE * 3);  
-  for (let i = 0; i < CELL_SIZE * 35; i += CELL_SIZE * 3){
-    image(ground, i, height - CELL_SIZE * 3.5, CELL_SIZE * 3.5, CELL_SIZE * 3.5);
+  let bgScroll = screenScroll * 0.3;
+
+  image(background, -bgScroll % width, 0, width, height - cellSize * 3);
+  image(background, (-bgScroll % width) + width, 0, width, height - cellSize * 3);    
+
+  let groundY = height - cellSize * 3;
+
+  for (let i = -width; i < width * 2; i += cellSize * 3){
+    image(ground, i - (screenScroll % (cellSize * 3)),groundY, cellSize * 3.5, cellSize * 3.5);
   } 
+
   for(let y = 0; y < tilesHigh; y++){
     for(let x = 0; x < tilesWide; x++){
       showTile(tiles[y][x], x, y);
@@ -107,13 +191,19 @@ function display(){
 
 function showTile(location, x, y){
   if (location === "s"){
-    image(spike, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    image(spike, x * tileWidth - screenScroll, y * tileHeight, tileWidth, tileHeight);
   }
   else if (location === "b"){
-    image(block, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    image(block, x * tileWidth - screenScroll, y * tileHeight, tileWidth, tileHeight);
+  }
+  else if (location === "F"){
+    image(end, x * tileWidth - screenScroll, y * tileHeight, tileWidth + 32, tileHeight);
+  }
+  else if (location === "P"){
+    image(empty, x * tileWidth - screenScroll, y * tileHeight, tileWidth, tileHeight);
   }
   else{
-    image(empty, x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+    image(empty, x * tileWidth - screenScroll, y * tileHeight, tileWidth, tileHeight);
   } 
 }
 
