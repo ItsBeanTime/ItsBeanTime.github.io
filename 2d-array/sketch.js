@@ -62,7 +62,7 @@ function setup(){
   cellSize = height / 12;
   player.y = cellSize * 9.5;
 
-  gravity = cellSize * 0.022;
+  gravity = cellSize * 0.023;
   jumpStrength = -cellSize * 0.32;
 
   screenSpeed = cellSize * 0.15;
@@ -105,7 +105,7 @@ function mousePressed(){
 
 function playerDisplay(){
   if (player.vy !== 0){
-    rotation += 0.1;
+    rotation += 0.105;
   }
 
   push();
@@ -125,7 +125,6 @@ function getTile(x,y){
   if (row >= 0 && row < tilesHigh && col >= 0 && col < tilesWide){
     return tiles[row][col];
   }
-  return "";
 }
 
 function playerMove(){
