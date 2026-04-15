@@ -127,7 +127,7 @@ function playerMove(){
 
   let groundLevel = cellSize * 8;
 
-  let bottom = getTile(player.x + cellSize / 2, player.y + cellSize);
+  let bottom = getTile(player.x + cellSize / 3, player.y + cellSize);
   let top = getTile(player.x + cellSize / 2, player.y);
   let front = getTile(player.x + cellSize, player.y + cellSize / 2);
   let spikeHitbox = getTile(player.x + cellSize * 0.5, player.y + cellSize * 0.45);
@@ -142,7 +142,7 @@ function playerMove(){
     canScroll = false;
   }
   if (spikeHitbox === "s"){
-    screenScroll = -cellSize * 4;
+    screenScroll = -cellSize * 3;
   }
 
   if (bottom === "b"){
@@ -156,7 +156,7 @@ function playerMove(){
     }
   }
   else if (top === "b" || front === "b"){
-    screenScroll = -cellSize * 4;
+    screenScroll = -cellSize * 3;
   }
 
   else if (player.y >= groundLevel){
