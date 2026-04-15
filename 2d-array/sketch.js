@@ -5,6 +5,10 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+let firstlevel = false;
+let titleScreen = true;
+
+
 let cellSize;
 let rotation = 0;
 
@@ -28,6 +32,7 @@ let background;
 let spike;
 let empty;
 let end;
+let title;
 
 let player = {
   x: 0,
@@ -41,7 +46,8 @@ function preload(){
   level = "assets/level.txt";
   lines = loadStrings(level);
 
-  end = loadImage("gd-end.png")
+  title = loadImage("gd-title.png");
+  end = loadImage("gd-end.png");
   empty = loadImage("empty.png");
   background = loadImage("gd-background.png");
   block = loadImage("gd-block.png");
@@ -56,10 +62,10 @@ function setup(){
   cellSize = height / 12;
   player.y = cellSize * 9.5;
 
-  gravity = cellSize * 0.019;
-  jumpStrength = -cellSize * 0.3;
+  gravity = cellSize * 0.022;
+  jumpStrength = -cellSize * 0.32;
 
-  screenSpeed = cellSize * 0.12;
+  screenSpeed = cellSize * 0.15;
 
   tilesHigh = lines.length;
   tilesWide = lines[0].length;
@@ -78,9 +84,23 @@ function setup(){
 }
 
 function draw(){
-  display();
-  playerDisplay();
-  playerMove();
+  if (titleScreen === true){
+    displayTitle();
+  }
+  else if (titleScreen === false && firstLevel === true){
+    display();
+    playerDisplay();
+    playerMove();    
+  }
+}
+
+function mousePressed(){
+  if (titleScreen === true){
+    screenScroll = -cellSize * 0.1;
+  }
+  firstLevel = true;
+  titleScreen = false;
+
 }
 
 function playerDisplay(){
@@ -142,7 +162,7 @@ function playerMove(){
     canScroll = false;
   }
   if (spikeHitbox === "s"){
-    screenScroll = -cellSize * 3;
+    screenScroll = -cellSize * 0.1;
   }
 
   if (bottom === "b"){
@@ -156,7 +176,7 @@ function playerMove(){
     }
   }
   else if (top === "b" || front === "b"){
-    screenScroll = -cellSize * 3;
+    screenScroll = -cellSize * 0.1;
   }
 
   else if (player.y >= groundLevel){
@@ -170,14 +190,31 @@ function playerMove(){
     }
   }
 }
-function display(){
-  let bgScroll = screenScroll * 0.3;
 
-  image(background, -bgScroll % width, 0, width, height - cellSize * 3);
-  image(background, (-bgScroll % width) + width, 0, width, height - cellSize * 3);    
+function displayTitle(){
+  screenScroll += screenSpeed - 1;
+
+  let bgScroll = screenScroll * 0.3; 
 
   let groundY = height - cellSize * 3;
 
+  image(background, -bgScroll % width, 0, width, height - cellSize * 3);
+  image(background, (-bgScroll % width) + width, 0, width, height - cellSize * 3);
+  imageMode(CENTER);
+  image(title, width/2, height/6, width /3, height /2);  
+  imageMode(CORNER);
+  for (let i = -width; i < width * 2; i += cellSize * 3){
+    image(ground, i - (screenScroll % (cellSize * 3)),groundY, cellSize * 3.5, cellSize * 3.5);
+  } 
+}
+
+function display(){
+  let bgScroll = screenScroll * 0.3;
+
+  let groundY = height - cellSize * 3;
+
+  image(background, -bgScroll % width, 0, width, height - cellSize * 3);
+  image(background, (-bgScroll % width) + width, 0, width, height - cellSize * 3);
   for (let i = -width; i < width * 2; i += cellSize * 3){
     image(ground, i - (screenScroll % (cellSize * 3)),groundY, cellSize * 3.5, cellSize * 3.5);
   } 
