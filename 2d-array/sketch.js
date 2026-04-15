@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let firstlevel = false;
+let firstLevel = false;
 let titleScreen = true;
 
 
@@ -141,7 +141,7 @@ function playerMove(){
     player.x += screenSpeed;    
   }
   
-  player.vy += gravity
+  player.vy += gravity;
   player.y += player.vy;
 
   let groundLevel = cellSize * 8;
@@ -198,12 +198,14 @@ function displayTitle(){
   let groundY = height - cellSize * 3;
 
   image(background, -bgScroll % width, 0, width, height - cellSize * 3);
-  image(background, (-bgScroll % width) + width, 0, width, height - cellSize * 3);
+  image(background, -bgScroll % width + width, 0, width, height - cellSize * 3);
   imageMode(CENTER);
-  image(title, width/2, height/6, width /3, height /2);  
+  image(title, width/2, height/6, width /1.5, height /1.5);
+  rectMode(CENTER); 
+  square(width/2, height/2, width /6);   
   imageMode(CORNER);
   for (let i = -width; i < width * 2; i += cellSize * 3){
-    image(ground, i - (screenScroll % (cellSize * 3)),groundY, cellSize * 3.5, cellSize * 3.5);
+    image(ground, i - screenScroll % (cellSize * 3),groundY, cellSize * 3.5, cellSize * 3.5);
   } 
 }
 
@@ -213,9 +215,9 @@ function display(){
   let groundY = height - cellSize * 3;
 
   image(background, -bgScroll % width, 0, width, height - cellSize * 3);
-  image(background, (-bgScroll % width) + width, 0, width, height - cellSize * 3);
+  image(background, -bgScroll % width + width, 0, width, height - cellSize * 3);
   for (let i = -width; i < width * 2; i += cellSize * 3){
-    image(ground, i - (screenScroll % (cellSize * 3)),groundY, cellSize * 3.5, cellSize * 3.5);
+    image(ground, i - screenScroll % (cellSize * 3),groundY, cellSize * 3.5, cellSize * 3.5);
   } 
 
   for(let y = 0; y < tilesHigh; y++){
