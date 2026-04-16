@@ -70,7 +70,7 @@ function preload(){
   clickSound = loadSound("geometry-dash-click-sound.mp3");
 
   //load images
-  playButton = loadImage("gd-playButton.png");
+  playButton = loadImage("gd-playbutton.png");
   title = loadImage("gd-title.png");
   end = loadImage("gd-end.png");
   empty = loadImage("empty.png");
