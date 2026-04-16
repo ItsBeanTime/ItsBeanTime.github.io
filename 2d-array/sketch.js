@@ -82,7 +82,7 @@ function preload(){
 }
 
 function setup(){
-  titleMusic.play();
+
   createCanvas(windowWidth, windowHeight);
 
   //set the cell size
@@ -105,7 +105,8 @@ function setup(){
 
   //create an empty 2d array
   tiles = createEmptyArray(tilesWide, tilesHigh);
-
+  titleMusic.loop();
+  // titleMusic.play();
   for (let y = 0; y < tilesHigh; y++){
     for (let x = 0; x < tilesWide; x++){
       let tileType = lines[y][x];
@@ -205,10 +206,9 @@ function playerCollisions(){
 
   //check finish collision
   if (finishHitbox === "F"){
-    canMove = false;
-    // endAnimation();
-  
+    canMove = false; 
     firstLevelMusic.stop();
+    titleMusic.play();
     titleScreen = true;
     firstLevel = false;
     screenScroll = -cellSize * 5;
@@ -233,7 +233,7 @@ function playerCollisions(){
     rotation = round(rotation / 90) * 90;
 
     //player can jump when on block
-    if (keyIsDown(32)){
+    if (keyIsDown(32) || mouseIsPressed === true){
       player.vy = jumpStrength;
     }
   }
@@ -252,7 +252,7 @@ function playerCollisions(){
     rotation = round(rotation / 90) * 90;
 
     //jump
-    if (keyIsDown(32)){
+    if (keyIsDown(32) || mouseIsPressed === true){
       player.vy = jumpStrength;
     }
   }
