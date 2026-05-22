@@ -16,6 +16,7 @@
 - [Connected Nodes OOP](15-nodes)
 - [inheritance OOP](16-inheritance)
 - [Recursive Circles](18-recursion)
+- [Sierpinski Triangle](19-sierpinski)
 
 ## Assignments
 - [Interactive Scene](interactive-scene)
